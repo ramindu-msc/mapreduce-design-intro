@@ -32,28 +32,6 @@ import java.util.Map;
 
 public class UrlIndex {
 
-    public static String getURL(String text) {
-
-        int idx = text.indexOf("\"http://");
-        if (idx == -1) {
-            return null;
-        }
-        int idx_end = text.indexOf('"', idx + 1);
-
-        if (idx_end == -1) {
-            return null;
-        }
-
-        int idx_hash = text.indexOf('#', idx + 1);
-
-        if (idx_hash != -1 && idx_hash < idx_end) {
-            return text.substring(idx + 1, idx_hash);
-        } else {
-            return text.substring(idx + 1, idx_end);
-        }
-
-    }
-
     public static class SOUrlExtractor extends
             Mapper<Object, Text, Text, Text> {
 
@@ -78,6 +56,9 @@ public class UrlIndex {
             }
 
             // Unescape the HTML because the SO data is escaped.
+            // &lt;div&gt;Hello &amp; Welcome!&lt;/div&gt;
+            // to
+            // <div>Hello & Welcome!</div>
             txt = StringEscapeUtils.unescapeHtml(txt.toLowerCase());
             String linkString = getURL(txt);
             if (null != linkString) {
@@ -99,6 +80,7 @@ public class UrlIndex {
                 sb.append(id.toString() + " ");
             }
 
+            // to remove the trailing space that is added after concatenating each id
             result.set(sb.substring(0, sb.length() - 1).toString());
             context.write(key, result);
         }
@@ -122,5 +104,29 @@ public class UrlIndex {
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
         FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+
+    public static String getURL(String text) {
+
+        int idx = text.indexOf("\"http://");
+        if (idx == -1) {
+            return null;
+        }
+        int idx_end = text.indexOf('"', idx + 1);
+
+        if (idx_end == -1) {
+            return null;
+        }
+
+        int idx_hash = text.indexOf('#', idx + 1);
+
+        if (idx_hash != -1 && idx_hash < idx_end) {
+            // <a href=\"http://example.com/page#section\">Link</a>
+            // http://example.com/page
+            return text.substring(idx + 1, idx_hash);
+        } else {
+            return text.substring(idx + 1, idx_end);
+        }
+
     }
 }

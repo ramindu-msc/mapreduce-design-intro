@@ -27,6 +27,9 @@ public class SimpleRandomSampling extends Configured implements Tool {
 		@Override
 		protected void setup(Context context) throws IOException,
 				InterruptedException {
+			// 0.1 (10%), 0.25 (25%)
+			// if the filter percentage is set to 95% (or 0.95 as a decimal) in the SimpleRandomSampling program,
+			// it means that approximately 95% of the records in the input dataset will be included in the output sample.
 			filterPercentage = context.getConfiguration().getFloat(
 					FILTER_PERCENTAGE_KEY, 0.0f);
 		}
@@ -34,6 +37,7 @@ public class SimpleRandomSampling extends Configured implements Tool {
 		@Override
 		public void map(Object key, Text value, Context context)
 				throws IOException, InterruptedException {
+			// A random float value is generated between 0.0 and 1.0 using
 			if (rands.nextFloat() < filterPercentage) {
 				context.write(NullWritable.get(), value);
 			}

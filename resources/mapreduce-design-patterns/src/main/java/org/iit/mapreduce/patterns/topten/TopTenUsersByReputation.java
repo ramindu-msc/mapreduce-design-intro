@@ -57,6 +57,10 @@ public class TopTenUsersByReputation extends Configured implements Tool {
 			}
 		}
 
+		/*
+		The cleanup method in the MapReduce framework is a part of the Mapper class
+		and is invoked once after all the map task's map method calls have been executed.
+		 */
 		@Override
 		protected void cleanup(Context context) throws IOException,
 				InterruptedException {
