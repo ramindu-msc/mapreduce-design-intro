@@ -20,7 +20,7 @@ import static java.lang.Math.log;
 
 public class BloomFilterGenerator {
 
-    public static class CustomerBloomFilterMapper extends Mapper<Object, Text, Text, Text> {
+    public static class OrderBloomFilterMapper extends Mapper<Object, Text, Text, Text> {
         int n = 10; // number of items in the filter: do a count before
         float p = 0.7f; // false positive rate
 
@@ -48,7 +48,7 @@ public class BloomFilterGenerator {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Bloom Filter Generator");
         job.setJarByClass(BloomFilterGenerator.class);
-        job.setMapperClass(CustomerBloomFilterMapper.class);
+        job.setMapperClass(OrderBloomFilterMapper.class);
         job.setNumReduceTasks(0); // No reducer needed
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

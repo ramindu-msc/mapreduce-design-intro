@@ -22,8 +22,18 @@ import java.io.IOException;
 public class CustomerOrderJoinWithBloomFilter {
 
     public static class OrderMapper extends Mapper<LongWritable, Text, NullWritable, Text> {
-        private BloomFilter bloomFilter = new BloomFilter();
+        @Override
+        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
+        }
+    }
+
+    public static class CustomerMapper extends Mapper<LongWritable, Text, NullWritable, Text> {
+        private BloomFilter bloomFilter = new BloomFilter();
+        /**
+         * Since we are using bloomfilter with orders with customer id,
+         * only relevant customer ids will be sent to reducer
+         */
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             // Load the Bloom filter from Distributed Cache
@@ -34,14 +44,6 @@ public class CustomerOrderJoinWithBloomFilter {
                 }
             }
         }
-
-        @Override
-        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-
-        }
-    }
-
-    public static class CustomerMapper extends Mapper<LongWritable, Text, NullWritable, Text> {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 

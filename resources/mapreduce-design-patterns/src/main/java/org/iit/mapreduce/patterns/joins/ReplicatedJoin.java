@@ -1,70 +1,86 @@
 package org.iit.mapreduce.patterns.joins;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
 public class ReplicatedJoin {
+    public class ReplicatedJoinMapper extends Mapper<LongWritable, Text, Text, Text> {
+        private Map<String, String> departmentMap = new HashMap<>();
 
-    public static class CountryMapper extends Mapper<Object, Text, Text, Text> {
-        private Map<String, String> countryMap = new HashMap<>();
-
-
-
+        /**
+         * This loads the file that can be stored in Memory
+         */
         @Override
-        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            // Assume input format for order data: orderId,customerId,countryCode,amount
-            String[] orderFields = value.toString().split(",");
-            if (orderFields.length >= 3) {
-                String countryCode = orderFields[2].trim();
-                String countryName = countryMap.get(countryCode);
-                if (countryName != null) {
-                    // Emit the joined record
-                    context.write(new Text(countryCode), new Text(countryName + "," + value.toString()));
+        protected void setup(Context context) throws IOException {
+            URI[] uris = context.getCacheFiles();
+            if (uris != null && uris.length > 0) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        context.getConfiguration().get("fs.defaultFS").equals("file:///")
+                                ? new FileInputStream(uris[0].getPath())
+                                : new FileInputStream(new Path(uris[0].getPath()).toString())
+                ));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(",");
+                    departmentMap.put(parts[0], parts[1]);
                 }
+                reader.close();
             }
         }
-    }
 
-    public static class CountryOrderReducer extends Reducer<Text, Text, NullWritable, Text> {
+        /**
+         * This will load the records in the large file distributed across the HDFS
+         */
         @Override
-        public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            for (Text value : values) {
-                // Emit the joined data
-                context.write(NullWritable.get(), value);
+        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            String[] fields = value.toString().split(",");
+            String empId = fields[0];
+            String empName = fields[1];
+            String deptId = fields[2];
+
+            String deptName = departmentMap.get(deptId);
+            if (deptName != null) {
+                context.write(new Text(empId), new Text(empName + "\t" + deptName));
             }
         }
     }
 
     public static void main(String[] args) throws Exception {
         if (args.length != 3) {
-            System.err.println("Usage: ReplicatedJoin <country data> <input path> <output path>");
+            System.err.println("Usage: ReplicatedJoinDriver <small-dataset> <large-dataset> <output>");
             System.exit(-1);
         }
 
         Configuration conf = new Configuration();
-        conf.set("country.data.path", "<hdfs-path-to-country-data>");
-
         Job job = Job.getInstance(conf, "Replicated Join");
         job.setJarByClass(ReplicatedJoin.class);
-        job.setMapperClass(CountryMapper.class);
-        job.setReducerClass(CountryOrderReducer.class);
+        job.setMapperClass(ReplicatedJoinMapper.class);
+        job.setNumReduceTasks(0);  // No reducer is needed
+
+        FileInputFormat.addInputPath(job, new Path(args[1]));
+        FileOutputFormat.setOutputPath(job, new Path(args[2]));
+
+        job.addCacheFile(new Path(args[0]).toUri());
+
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
-        job.setNumReduceTasks(1); // Use one reducer to consolidate output
-
-        FileInputFormat.addInputPath(job, new Path(args[1])); // Input path for order data
-        FileOutputFormat.setOutputPath(job, new Path(args[2])); // Output path for joined data
 
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
