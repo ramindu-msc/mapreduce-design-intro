@@ -98,7 +98,7 @@ public class CustomerOrderAggregation {
             result.set(jsonOutput.toString());
 
             // Write output to country-specific folder using MultipleOutputs
-            multipleOutputs.write("CountryOutput", key, result, "output/" + country + "/part");
+            context.write(new Text(key), new Text(result));
         }
 
         @Override
@@ -121,10 +121,6 @@ public class CustomerOrderAggregation {
         job.setOutputValueClass(Text.class);
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        // Configure MultipleOutputs for country-specific directories
-        MultipleOutputs.addNamedOutput(job, "CountryOutput", TextOutputFormat.class, Text.class, Text.class);
-
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
