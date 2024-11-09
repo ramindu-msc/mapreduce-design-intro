@@ -24,6 +24,9 @@ public class StructuredToHierarchical {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             // Input: C001,John Doe,123 Elm St,USA
+            // read hdfs : full data sample
+            //algo > get all key
+            //check with bloom film
             String[] fields = value.toString().split(",");
             if (fields.length == 4) {
                 String customerId = fields[0];

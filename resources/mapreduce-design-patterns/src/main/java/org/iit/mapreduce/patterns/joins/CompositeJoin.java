@@ -27,7 +27,7 @@ public class CompositeJoin {
             // key: departmentId, value: <source>,<record>
             String[] parts = value.toString().split(",", 2);
             String source = parts[0]; // EMP or DEPT
-            String record = parts[1];
+            String record = parts[1]; 
             context.write(new Text(key.toString()), new Text(source + "," + record));
         }
     }
@@ -57,8 +57,8 @@ public class CompositeJoin {
         String joinExpression = CompositeInputFormat.compose(
                 "inner",
                 KeyValueTextInputFormat.class,
-                args[0], // /path/to/departments
-                args[1]  // /path/to/employees
+                args[0], // /path/to/departments - pationg region
+                args[1]  // /path/to/employees - patrtion regions
         );
         conf.set("mapreduce.join.expr", joinExpression);
 
