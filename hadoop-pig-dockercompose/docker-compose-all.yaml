@@ -19,8 +19,6 @@ services:
       # - 9870:9870
     # command: ["hdfs", "namenode"]
 
-
-
   datanode:
     image: ramilu90/hadoop-datanode
     platform: linux/amd64
