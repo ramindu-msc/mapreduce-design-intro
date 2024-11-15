@@ -1,0 +1,11 @@
+﻿ERROR: Unable to connect to database at 192.168.1.100
+INFO: User john logged in successfully
+ERROR: Database connection timed out at 192.168.1.101
+INFO: User jane logged in
+WARN: High memory usage detected on node 10.20.30.40
+ERROR: Connection refused at 192.168.1.102
+INFO: User john logged out
+ERROR: Unable to connect to database at 192.168.1.103
+INFO: System rebooted successfully
+WARN: Disk space running low on node 10.20.30.41
+ERROR: Database connection timed out at 192.168.1.100

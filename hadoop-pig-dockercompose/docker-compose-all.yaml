@@ -10,13 +10,13 @@ services:
       # - ./Makefile:/opt/hadoop/Makefile
     environment:
       - CLUSTER_NAME=test
-      # - HDFS_SITE_XML_dfs.webhdfs.enabled=true
-      # - ENSURE_NAMENODE_DIR=/tmp/hadoop-root/dfs/name
+      - HDFS_SITE_XML_dfs.webhdfs.enabled=true
+      - ENSURE_NAMENODE_DIR=/tmp/hadoop-root/dfs/name
     env_file:
       - ./hadoop-hive.env
     ports:
       - 50070:50070
-      # - 9870:9870
+      - 9870:9870
     # command: ["hdfs", "namenode"]
 
   datanode:
@@ -29,6 +29,9 @@ services:
       - ./hadoop-hive.env
     ports:
       - 50075:50075
+    environment:
+      - CLUSTER_NAME=test
+    command: [ "hdfs", "datanode" ]
 
   resourcemanager:
     image: ramilu90/hadoop-datanode
@@ -45,6 +48,9 @@ services:
       - ./hadoop-hive.env
     volumes:
       - ./test.sh:/opt/test.sh
+    environment:
+      - CLUSTER_NAME=test
+
   nodemanager:
     image: ramilu90/hadoop-datanode
     container_name: nodemanager
@@ -52,6 +58,9 @@ services:
     command: [ "yarn", "nodemanager" ]
     env_file:
       - ./hadoop-hive.env
+    environment:
+      - CLUSTER_NAME=test
+
   pig:
     image: ramilu90/pig
     container_name: pig
@@ -68,6 +77,8 @@ services:
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends.pig:/opt/l_get_friends.pig
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/friends.txt:/opt/friends.txt
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends_mapreduce.pig:/opt/l_get_friends_mapreduce.pig
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/wordcount.pig:/opt/wordcount.pig
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/piggybank-0.16.0.jar:/opt/piggybank-0.16.0.jar
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/pig_conf:/opt/pig/conf/
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/hadoop_conf:/etc/hadoop/conf 
     command: tail -f /dev/null

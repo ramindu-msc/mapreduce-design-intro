@@ -59,6 +59,7 @@ services:
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends.pig:/opt/l_get_friends.pig
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/friends.txt:/opt/friends.txt
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends_mapreduce.pig:/opt/l_get_friends_mapreduce.pig
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/wordcount.pig:/opt/wordcount.pig
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/pig_conf:/opt/pig/conf/
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/hadoop_conf:/etc/hadoop/conf 
     command: tail -f /dev/null
