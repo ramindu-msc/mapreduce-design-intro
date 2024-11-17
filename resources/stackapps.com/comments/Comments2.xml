@@ -1,11 +1,9 @@
-﻿ERROR: Unable to connect to database at 192.168.1.100
-INFO: User john logged in successfully
-ERROR: Database connection timed out at 192.168.1.101
-INFO: User jane logged in
-WARN: High memory usage detected on node 10.20.30.40
-ERROR: Connection refused at 192.168.1.102
-INFO: User john logged out
-ERROR: Unable to connect to database at 192.168.1.103
-INFO: System rebooted successfully
-WARN: Disk space running low on node 10.20.30.41
-ERROR: Database connection timed out at 192.168.1.100
+﻿2024-11-17 10:15:00 INFO User login success user_id=123
+2024-11-17 10:15:05 ERROR Failed to load resource url=/api/data
+2024-11-17 10:15:10 INFO User logout success user_id=123
+2024-11-17 10:15:15 WARN Disk space low on server1
+2024-11-17 10:15:20 INFO User login success user_id=456
+2024-11-17 10:15:25 ERROR Timeout while accessing url=/api/resource
+2024-11-17 10:15:30 INFO User login failed user_id=789
+2024-11-17 10:15:35 WARN High memory usage on server2
+2024-11-17 10:15:40 INFO User logout success user_id=456

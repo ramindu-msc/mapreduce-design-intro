@@ -8,11 +8,14 @@ comments = LOAD '/user/test/stackapps.com/comments/Comments2.xml'
     USING org.apache.pig.piggybank.storage.XMLLoader(
         'Id:int,PostId:int,Score:int,Text:chararray,CreationDate:chararray,UserId:int'
     );
-
-Lines = LOAD '/user/test/stackapps.com/comments/Comments2.xml' AS (line: chararray); 
-Words = FOREACH Lines GENERATE  FLATTEN(TOKENIZE(line)) AS word;
-Groups = GROUP Words BY word;
-Counts = FOREACH Groups GENERATE  group, COUNT(Words) AS word_count; 
-Results = ORDER Counts BY word_count DESC;
-Top5 = LIMIT Results 5;
-STORE Top5 INTO '/user/test/top5words';
+    
+-- Load the input text file
+lines = LOAD '/user/test/stackapps.com/comments/Comments2.xml' USING PigStorage('\n') AS (line:chararray);
+-- Split each line into words
+words = FOREACH lines GENERATE FLATTEN(TOKENIZE(line)) AS word;
+-- Group by each word
+grouped_words = GROUP words BY word;
+-- Count the occurrences of each word
+word_count = FOREACH grouped_words GENERATE group AS word, COUNT(words) AS count;
+DUMP word_count;
+STORE word_count INTO '/user/test/top5words';

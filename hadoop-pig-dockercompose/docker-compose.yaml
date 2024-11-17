@@ -6,6 +6,7 @@ services:
     platform: linux/amd64
     volumes:
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/friends-mapreduce.txt:/opt/friends-mapreduce.txt
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/resources:/opt/hadoop/resources
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -58,6 +59,7 @@ services:
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-hive-dockercompose/recharge.input:/opt/recharge.input
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends.pig:/opt/l_get_friends.pig
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/friends.txt:/opt/friends.txt
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/piggybank-0.16.0.jar:/opt/piggybank-0.16.0.jar
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends_mapreduce.pig:/opt/l_get_friends_mapreduce.pig
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/wordcount.pig:/opt/wordcount.pig
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/pig_conf:/opt/pig/conf/
