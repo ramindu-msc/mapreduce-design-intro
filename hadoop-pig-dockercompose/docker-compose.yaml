@@ -17,6 +17,7 @@ services:
   datanode:
     image: ramilu90/hadoop-datanode
     platform: linux/amd64
+    container_name: datanode
     depends_on: 
       - namenode
     env_file:
