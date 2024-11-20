@@ -17,6 +17,7 @@ services:
   datanode:
     image: ramilu90/hadoop-datanode
     platform: linux/amd64
+    container_name: datanode
     depends_on: 
       - namenode
     env_file:
@@ -28,6 +29,7 @@ services:
     image: ramilu90/hadoop-datanode
     platform: linux/amd64
     hostname: resourcemanager
+    container_name: resourcemanager
     command: [ "yarn", "resourcemanager" ]
     depends_on:
       - namenode
@@ -41,27 +43,48 @@ services:
   nodemanager:
     image: ramilu90/hadoop-datanode
     platform: linux/amd64
+    container_name: nodemanager
     command: [ "yarn", "nodemanager" ]
     env_file:
       - ./hadoop-hive.env
-  pig:
-    image: ramilu90/pig
-    container_name: pig
+
+
+  spark-master:
+    image: ramilu90/spark-master
+    container_name: spark-master
+    platform: linux/amd64
+    environment:
+      - HADOOP_CONF_DIR=/etc/hadoop/conf
+    ports:
+      - 8080:8080
+      - 7077:7077
+    env_file:
+      - ./hadoop-hive.env
+    volumes:
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-spark-dockercompose/hadoop_conf:/etc/hadoop/conf 
+  spark-worker:
+    image: ramilu90/spark-worker
     platform: linux/amd64
     depends_on:
-      - namenode
-      - datanode
-      - resourcemanager
+      - spark-master
     environment:
-      - PIG_CONF_DIR=/opt/pig/conf
+      - SPARK_MASTER=spark://spark-master:7077
       - HADOOP_CONF_DIR=/etc/hadoop/conf
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./hadoop-hive.env
     volumes:
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-hive-dockercompose/recharge.input:/opt/recharge.input
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends.pig:/opt/l_get_friends.pig
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/friends.txt:/opt/friends.txt
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/piggybank-0.16.0.jar:/opt/piggybank-0.16.0.jar
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/l_get_friends_mapreduce.pig:/opt/l_get_friends_mapreduce.pig
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/wordcount.pig:/opt/wordcount.pig
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/pig_conf:/opt/pig/conf/
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-pig-dockercompose/hadoop_conf:/etc/hadoop/conf 
-    command: tail -f /dev/null
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-spark-dockercompose/hadoop_conf:/etc/hadoop/conf 
+  spark-notebook:
+    image: ramilu90/spark-notebook
+    platform: linux/amd64
+    container_name: spark-notebook
+    environment:
+      - HADOOP_CONF_DIR=/etc/hadoop/conf
+    env_file:
+      - ./hadoop-hive.env
+    ports:
+      - 9001:9001
+    volumes:
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-spark-dockercompose/hadoop_conf:/etc/hadoop/conf 
