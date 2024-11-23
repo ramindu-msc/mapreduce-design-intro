@@ -11,4 +11,9 @@
         <name>hadoop.tmp.dir</name>
         <value>/tmp/hadoop</value>
     </property>
+
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+    </property>
 </configuration>
