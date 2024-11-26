@@ -4,8 +4,8 @@ FROM ubuntu:22.04
 # Set environment variables for Spark, Hadoop, and Java
 ENV SPARK_VERSION=2.4.8 \
     HADOOP_VERSION=2.8.5 \
-    JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-arm64 \
-    PATH=$PATH:/opt/hadoop/bin:/opt/spark/bin:/opt/spark/sbin:/usr/lib/jvm/java-1.8.0-openjdk-arm64/bin \
+    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
+    PATH=$PATH:/opt/hadoop/bin:/opt/spark/bin:/opt/spark/sbin \
     PYSPARK_PYTHON=python3
 
 # Install necessary dependencies
@@ -18,12 +18,6 @@ RUN apt-get update && apt-get install -y \
     bash \
     git \
     && apt-get clean
-
-# Explicitly verify and set JAVA_HOME
-RUN echo "JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-arm64" >> /etc/environment && \
-    export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-arm64 && \
-    echo $JAVA_HOME && \
-    java -version
 
 # Install Hadoop 2.8
 RUN wget https://archive.apache.org/dist/hadoop/common/hadoop-2.8.5/hadoop-2.8.5.tar.gz \
