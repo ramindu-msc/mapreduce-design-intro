@@ -8,6 +8,7 @@ services:
     volumes:
       - ./Makefile:/opt/hadoop/Makefile
       - /Users/ramindu/iit/lecture4/mapreduce-design-intro/resources:/opt/hadoop/resources
+      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/dockercompose/recharge2.input:/opt/recharge2.input
     ports:
       - 9870:9870
     env_file:
