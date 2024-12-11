@@ -1,7 +1,7 @@
 version: '2' 
 services:
   namenode:
-    image: apache/hadoop:3
+    image: bde2020/hadoop-namenode:1.1.0-hadoop2.8-java8
     container_name: namenode
     platform: linux/amd64
     volumes:
@@ -14,7 +14,7 @@ services:
     ports:
       - 50070:50070
   datanode:
-    image: apache/hadoop:3
+    image: bde2020/hadoop-datanode:1.1.0-hadoop2.8-java8
     platform: linux/amd64
     depends_on: 
       - namenode
@@ -24,37 +24,6 @@ services:
       - ./hadoop-hive.env
     ports:
       - 50075:50075
-
-  resourcemanager:
-    image: apache/hadoop:3
-    platform: linux/amd64
-    hostname: resourcemanager
-    container_name: resourcemanager
-    command: [ "yarn", "resourcemanager" ]
-    ports:
-      - 8088:8088
-    env_file:
-      - ./hadoop-hive.env
-    volumes:
-      - ./test.sh:/opt/test.sh
-    environment:
-      - CLUSTER_NAME=test
-    deploy:
-      resources:
-        limits:
-          cpus: "1.5"  # limit to 1.5 CPU cores
-          memory: "2g"  # limit memory to 2GB
-  
-  nodemanager:
-    image: apache/hadoop:3
-    platform: linux/amd64
-    container_name: nodemanager
-    command: [ "yarn", "nodemanager" ]
-    env_file:
-      - ./hadoop-hive.env
-    environment:
-      - CLUSTER_NAME=test
-
   hive-server:
     image: bde2020/hive:2.1.0-postgresql-metastore
     platform: linux/amd64

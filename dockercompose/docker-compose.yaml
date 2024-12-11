@@ -7,8 +7,8 @@ services:
     container_name: namenode
     volumes:
       - ./Makefile:/opt/hadoop/Makefile
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/resources:/opt/hadoop/resources
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/dockercompose/recharge2.input:/opt/recharge2.input
+      - /Users/ramindu/personal/iit/lecture4/mapreduce-design-intro/resources:/opt/hadoop/resources
+      - /Users/ramindu/personal/iit/lecture4/mapreduce-design-intro/dockercompose/recharge2.input:/opt/recharge2.input
     ports:
       - 9870:9870
     env_file:
@@ -67,7 +67,7 @@ services:
     image: bde2020/hive:2.1.0-postgresql-metastore
     platform: linux/amd64
     volumes:
-      - /Users/ramindu/iit/lecture4/mapreduce-design-intro/hadoop-hive-dockercompose/recharge.input:/opt/recharge.input
+      - /Users/ramindu/personal/iit/lecture4/mapreduce-design-intro/hadoop-hive-dockercompose/recharge.input:/opt/recharge.input
     container_name: hive-server
     env_file:
       - ./hadoop-hive.env
