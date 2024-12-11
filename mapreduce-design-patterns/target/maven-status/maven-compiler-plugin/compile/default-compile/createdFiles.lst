@@ -1,0 +1,4 @@
+org/example/MRDPUtils.class
+org/example/WordCount$WordCountMapper.class
+org/example/WordCount.class
+org/example/WordCount$IntSumReducer.class
