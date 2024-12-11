@@ -10,7 +10,7 @@ services:
     environment:
       - CLUSTER_NAME=test
     env_file:
-      - ./hadoop-hive.env
+      - ./config
     ports:
       - 50070:50070
   datanode:
@@ -21,7 +21,7 @@ services:
     # volumes:
     #   - ./data/datanode:/hadoop/dfs/data
     env_file:
-      - ./hadoop-hive.env
+      - ./config
     ports:
       - 50075:50075
 
@@ -34,7 +34,7 @@ services:
     ports:
       - 8088:8088
     env_file:
-      - ./hadoop-hive.env
+      - ./config
     volumes:
       - ./test.sh:/opt/test.sh
     environment:
@@ -51,7 +51,7 @@ services:
     container_name: nodemanager
     command: [ "yarn", "nodemanager" ]
     env_file:
-      - ./hadoop-hive.env
+      - ./config
     environment:
       - CLUSTER_NAME=test
 
